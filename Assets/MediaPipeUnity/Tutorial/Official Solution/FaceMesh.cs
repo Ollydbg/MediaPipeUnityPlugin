@@ -10,7 +10,6 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-
 namespace Mediapipe.Unity.Tutorial
 {
   public class FaceMesh : MonoBehaviour
@@ -35,7 +34,28 @@ namespace Mediapipe.Unity.Tutorial
       yield return new WaitUntil(() => _webCamTexture.width > 16);
 
       _screen.rectTransform.sizeDelta = new Vector2(_width, _height);
-      _screen.texture = _webCamTexture;
+      StartCoroutine(Run());
+    }
+
+    private IEnumerator Run()
+    {
+      var textureFramePool = new Experimental.TextureFramePool(_webCamTexture.width, _webCamTexture.height, TextureFormat.RGBA32, 10);
+
+      while (true)
+      {
+        if (!textureFramePool.TryGetTextureFrame(out var textureFrame))
+        {
+          yield return new WaitForEndOfFrame();
+          continue;
+        }
+        // textureFrame.ReadTextureFromOnCPU(_webCamTexture);
+        // var request = textureFrame.ReadPixelsAsync(_webCamTexture);
+        var request = textureFrame.ReadTextureAsync(_webCamTexture, false, true);
+        yield return new WaitUntil(() => request.done);
+        _screen.texture = textureFrame.texture;
+        textureFrame.Release();
+        yield return new WaitForEndOfFrame();
+      }
     }
 
     private void OnDestroy()
