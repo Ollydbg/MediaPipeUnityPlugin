@@ -295,7 +295,8 @@ class BuildCommand(Command):
 
     commands = self._build_common_commands()
     commands += [f'--config=ios_{self.command_args.ios}']
-
+    commands.append(f'--java_runtime_version=remotejdk_11')
+    
     if self.command_args.apple_bitcode:
       commands += ['--copt=-fembed-bitcode', '--apple_bitcode=embedded']
 
