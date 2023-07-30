@@ -144,7 +144,7 @@ jobs:
       - name: Build bazel to circumvent a compile error
         run: |
           mkdir bin
-          git clone https://github.com/bazelbuild/bazel.git --depth 1 --single-branch --branch  5.2.0
+          git clone https://github.com/bazelbuild/bazel.git --depth 1 --single-branch --branch  6.1.2
           cd bazel
           git apply ../third_party/bazel_ios_workaround.diff
           bazel build --tool_java_language_version=11 --tool_java_runtime_version=remotejdk_11 --java_runtime_version=remotejdk_11 --java_language_version=11 --javacopt "-Xep:ComparisonOutOfRange:ERROR" //src:bazel
