@@ -141,6 +141,7 @@ jobs:
       - name: Install NumPy
         run: pip install --no-cache-dir --user numpy
 
+      # //bazel build --java_runtime_version=remotejdk_11 //src:bazel
       - name: Build bazel to circumvent a compile error
         run: |
           mkdir bin
@@ -148,7 +149,6 @@ jobs:
           cd bazel
           git apply ../third_party/bazel_ios_workaround.diff
           bazel build --tool_java_language_version=11 --tool_java_runtime_version=remotejdk_11 --java_runtime_version=remotejdk_11 --java_language_version=11 --javacopt "-Xep:ComparisonOutOfRange:ERROR" //src:bazel
-          //bazel build --java_runtime_version=remotejdk_11 //src:bazel
           cp bazel-bin/src/bazel ../bin
           cd ..
           echo "bin" >> $GITHUB_PATH
